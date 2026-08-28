@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rondesores</title>
+    <meta name="viewport" content="width=device-width, initial-1scale=1.0">
+    <style>
+        body {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 15px;
+            font-size: 20px;
+        }
+
+        #chat {
+            border: 1px solid #cccccc;
+            padding: 15px;
+            min-height: 250px;
+            margin-bottom: 15px;
+            overflow-y: auto;
+        }
+        #chat p {
+            font-size: 23px;
+            line-height: 1.55;
+            font-weight: 500;
+            color: #111111;
+        }
+        #chat p b {
+            font-size: 26px;
+            font-weight: 700;
+        }
+        input {
+            width: 70%;
+            padding: 10px;
+            font-size: 18px;
+        }
+        button {
+            padding: 10px 14px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Rondesores</h1>
+
+    <div id="chat"></div>
+
+    <input id="message" type="text" placeholder="Ask Rondesores anything..." onkeydown="if(event.key==='Enter') sendMessage()">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById("message");
+            const chat = document.getElementById("chat");
+            const question = input.value;
+
+        if (!question.trim()) return;
+
+        chat.innerHTML += "<p><b>You:<b> " + question + "</p>";
+        input.value = "";
+
+        const response = await  fetch("/ask", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify ({
+                question: question
+            })
+        });
+
+            const data = await response.json();
+
+            chat.innerHTML += "<p>" + data.answer + "</p>";
+            }
+            </script>
+
+
+
+
+
+        
