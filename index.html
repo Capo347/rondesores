@@ -45,12 +45,52 @@
         body.dark-mode #chat P {
             color: white;
         }
+        
+        #natureDecor {
+            display: none;
+        }
+
+        body.nature-mode #natureDecor {
+            display: block;
+            font-size: 32px;
+            text-align: center;
+        }
+
+        body.nature-mode {
+            background-image: url("nature-background.png");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #111111;
+        }
+            body.nature-mode #chat P {
+                color: #111111;
+        }
+        
+        .user-bubble {
+            background-color: white;
+            color: #111111;
+            padding: 12px 16pxl;
+            border-radius: 16px;
+            margin: 10px 0;
+        }
+
+        .ai-bubble {
+            background-color: #d9efff;
+            color: #111111;
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin: 10px 0;
+        }
+
     </style>
 </head>
 <body>
 
     <h1>Rondesores</h1>
-    <button id="themeToggle" onclick="toggleTheme()">🌙 Dark Mode</button>
+        <button onclick="setTheme('light')">☀️ Light</button>
+        <button onclick="setTheme('dark')">🌙 Dark</button>
+        <button onclick="setTheme('nature')">🌿 Nature</button>
 
     <div id="chat"></div>
 
@@ -58,11 +98,16 @@
     <button onclick="sendMessage()">Send</button>
 
     <script>
-        function toggleTheme(){
-            const isDark = document.body.classList.toggle("dark-mode");
-            const button = document.getElementById("themeToggle");
-            button.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+        function setTheme(theme) {
+            document.body.classlist.remove("dark-mode", "nature-mode");
+            
+            if (theme === "dark") {
+                document.body.classlist.add("dark-mode");
+            } else if (theme === "nature") {
+                document.body.classlist.add("nature-mode");
+            }
         }
+        
         async function sendMessage(){
             const input = document.getElementById("message");
             const chat = document.getElementById("chat");
@@ -70,7 +115,7 @@
 
         if (!question.trim()) return;
 
-        chat.innerHTML += "<p><b>You:</b> " + question + "</p>";
+        chat.innerHTML += '<p class="user-bubble"><b>You:</b> ' + question + '</p>';
         input.value = "";
 
         const response = await  fetch("/ask", {
@@ -85,7 +130,7 @@
 
             const data = await response.json();
 
-            chat.innerHTML += "<p>" + data.answer + "</p>";
+            chat.innerHTML += '<p class="ai-bubble">' + data.answer + '</p>';
             }
             </script>
 
