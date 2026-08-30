@@ -10,7 +10,7 @@
             padding: 15px;
             font-size: 20px;
         }
-
+            
         #chat {
             border: 1px solid #cccccc;
             padding: 15px;
@@ -37,11 +37,20 @@
             padding: 10px 14px;
             font-size: 16px;
         }
+        body.dark-mode {
+            background-color: #111111;
+            color: white;
+        }
+
+        body.dark-mode #chat P {
+            color: white;
+        }
     </style>
 </head>
 <body>
 
     <h1>Rondesores</h1>
+    <button id="themeToggle" onclick="toggleTheme()">🌙 Dark Mode</button>
 
     <div id="chat"></div>
 
@@ -49,14 +58,19 @@
     <button onclick="sendMessage()">Send</button>
 
     <script>
-        async function sendMessage() {
+        function toggleTheme(){
+            const isDark = document.body.classList.toggle("dark-mode");
+            const button = document.getElementById("themeToggle");
+            button.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+        }
+        async function sendMessage(){
             const input = document.getElementById("message");
             const chat = document.getElementById("chat");
             const question = input.value;
 
         if (!question.trim()) return;
 
-        chat.innerHTML += "<p><b>You:<b> " + question + "</p>";
+        chat.innerHTML += "<p><b>You:</b> " + question + "</p>";
         input.value = "";
 
         const response = await  fetch("/ask", {
