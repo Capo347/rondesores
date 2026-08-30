@@ -19,6 +19,10 @@ memory = []
 def home():
     return FileResponse("index.html")
 
+@app.get("/nature-background.png")
+def nature_background():
+    return FileResponse("nature-background.png")
+
 from pydantic import BaseModel
 
 class Question(BaseModel):
