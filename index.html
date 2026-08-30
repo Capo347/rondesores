@@ -70,7 +70,7 @@
         .user-bubble {
             background-color: white;
             color: #111111;
-            padding: 12px 16pxl;
+            padding: 12px 16px;
             border-radius: 16px;
             margin: 10px 0;
         }
@@ -99,12 +99,12 @@
 
     <script>
         function setTheme(theme) {
-            document.body.classlist.remove("dark-mode", "nature-mode");
+            document.body.classList.remove("dark-mode", "nature-mode");
             
             if (theme === "dark") {
-                document.body.classlist.add("dark-mode");
+                document.body.classList.add("dark-mode");
             } else if (theme === "nature") {
-                document.body.classlist.add("nature-mode");
+                document.body.classList.add("nature-mode");
             }
         }
         
