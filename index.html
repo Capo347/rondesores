@@ -83,14 +83,24 @@
             body.nature-mode #chat {
                 width: 58%;
                 max-width: 300px;
-                margin: 145px auto 15px auto;
-                padding: 0;
+                height: 480px;
+                margin: 145px auto 0 auto;
+                padding: 15px;
+                box-sizing: border-box;
                 border: none;
-                min-height: 0;
+                overflow-y: auto;
                 box-sizing: border-box;
                 display: flex;
                 flex-direction: column;
-                align-items: center;
+                align-items: stretch;
+            }
+            body.nature-mode .user-bubble,
+            body.nature-mode .ai-bubble{
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+                font-size: 16px;
+                line-height: 1.4;
             }
             body.nature-mode #askRow {
                 width: 58%;
@@ -100,7 +110,15 @@
                 gap: 8px;
                 box-sizing: border-box;
             }
-        }
+            body.nature-mode #message{
+                min-width: 0;
+                flex: 1;
+                box-sizing: border-box;
+            }
+            body.nature-mode #askRow button {
+                flex: 0 0 auto;
+            }
+
         .user-bubble {
             background-color: white;
             color: #111111;
