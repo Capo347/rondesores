@@ -92,6 +92,14 @@
                 flex-direction: column;
                 align-items: center;
             }
+            body.nature-mode #askRow {
+                width: 58%;
+                max-width: 300px;
+                margin: 10px auto 0 auto;
+                display: flex;
+                gap: 8px;
+                box-sizing: border-box;
+            }
         }
         .user-bubble {
             background-color: white;
@@ -120,8 +128,10 @@
 
     <div id="chat"></div>
 
-    <input id="message" type="text" placeholder="Ask Rondesores anything..." onkeydown="if(event.key==='Enter') sendMessage()">
+    <div id="askRow">
+    <input id="message" type="text" placeholder="Ask Rondesores anything...">
     <button onclick="sendMessage()">Send</button>
+    </div>
 
     <script>
         function setTheme(theme) {
