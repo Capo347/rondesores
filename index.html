@@ -42,7 +42,7 @@
             background-color: white;
             color: #111111;
         }
-        
+
         body.dark-mode {
             background-color: #111111;
             color: white;
@@ -70,74 +70,66 @@
             display: none;
         }
 
+        body.nature-mode {
+            background-color: #fffdf7;
+            color: #111111;
+        }
+
         body.nature-mode #natureDecor {
             display: block;
-            font-size: 32px;
-            text-align: center;
+            position: fixed;
+            inset: 0;
+            background-image: url("nature-background.png");
+            background-repeat: repeat-y;
+            background-position: top center;
+            background-size: 100% auto;
+            pointer-events: none;
+            z-index: 0;
         }
 
-        body.nature-mode {
-            background-image: url("nature-background.png?v=2");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-attachment: fixed;
+        body.nature-mode h1,
+        body.nature-mode button,
+        body.nature-mode #chat,
+        body.nature-mode #askRow {
+            position: relative;
+            z-index: 1;
+        }
+
+        body.nature-mode #chat {
+            border: none;
+            width: 100%;
+            max-width: 700px;
+            min-height: 250px;
+            box-sizing: border-box;
+        }
+
+        body.nature-mode #chat p {
             color: #111111;
-            min-height: 100vh;
-            max-width: none;
-
-        }
-            body.nature-mode #chat P {
-                color: #111111;
-            }
-
-            body.nature-mode .user-bubble,
-            body.nature-mode .ai-bubble {
-                max-width: 82%;
-                margin-left: auto;
-                margin-right: auto;
-                box-sizing: border-box;   
         }
 
-        @media (max-width: 480px) {
-            body.nature-mode #chat {
-                width: 58%;
-                max-width: 300px;
-                height: 480px;
-                margin: 145px auto 0 auto;
-                padding: 15px;
-                box-sizing: border-box;
-                border: none;
-                overflow-y: auto;
-                box-sizing: border-box;
-                display: flex;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            body.nature-mode .user-bubble,
-            body.nature-mode .ai-bubble{
-                width: 100%;
-                max-width: 100%;
-                box-sizing: border-box;
-                font-size: 16px;
-                line-height: 1.4;
-            }
-            body.nature-mode #askRow {
-                width: 58%;
-                max-width: 300px;
-                margin: 10px auto 0 auto;
-                display: flex;
-                gap: 8px;
-                box-sizing: border-box;
-            }
-            body.nature-mode #message{
-                min-width: 0;
-                flex: 1;
-                box-sizing: border-box;
-            }
-            body.nature-mode #askRow button {
-                flex: 0 0 auto;
-            }
+        body.nature-mode .user-bubble {
+            max-width: 90%;
+            margin: 10px auto;
+        }
+
+        body.nature-mode .ai-bubble {
+            max-width: 90%;
+            margin: 10px auto;
+            background-color: #eaf7e8;
+        }
+
+        body.nature-mode #askRow {
+            width: 100%;
+            max-width: 700px;
+            margin: 15px auto;
+            display: flex;
+            gap: 8px;
+        }
+
+        body.nature-mode #message {
+            flex: 1;
+            min-width: 0;
+        }
 
         .user-bubble {
             background-color: white;
