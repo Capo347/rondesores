@@ -52,11 +52,18 @@
             color: white;
         }
 
-        body.dark-mode {
-            background-color: #111111;
-            color: white;
+        body.dark-mode #chat {
+            border: none;
         }
         
+        body.dark-mode .user-bubble,
+        body.dark-mode .ai-bubble {
+            background-color: transparent;
+            color: white;
+            padding: 0;
+            border-radius: 0;
+            
+        }
         #natureDecor {
             display: none;
         }
