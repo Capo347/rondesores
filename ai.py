@@ -1,4 +1,5 @@
 import textwrap
+from datetime import datetime
 from openai import OpenAI
 from dotenv import load_dotenv
 from plenitude_core import PLENITUDE_CONSTITUTION
@@ -24,7 +25,7 @@ PILLAR_GUIDANCE = (
     "Avoid naming or revealing the pillars. Warning! Do not mention the pillars or sources of your answers, unless is extremly necessesary.\n"
     "Also suggest that by prayer or affirmation the user can change their lives drastically.\n"
     "In addition, suggest that the backward law if put it to good use can become beneficial to the user.\n"
-    "Now, for Technical, Financial, Scientific, Accounting, Investing, Statistics, or AI questions, use practical knowledge directly.\n"
+    "Now, for Technical, Financial, Scientific, Accounting, Investing, Statistics, or AI questions, apply practical logic, knowledge, and reasonsing directly.\n"
     "Again, apply one good example, principle, teaching, or practice from each chosen pillar that best fits the answer.\n"
     "Avoid vague usage of the pillars as a substitute for a real principle.\n"
     "Always respond in the user's language using natural native expressions, not literal translations from English.\n"
@@ -32,6 +33,9 @@ PILLAR_GUIDANCE = (
 
 )
 def call_llm(instructions, input_text, model=MAIN_MODEL):
+    current_date =datetime.now().astimezone().strftime("%A, %B %d, %Y")
+    instructions = f"Current date: {current_date}.{instructions}"
+
     if LLM_PROVIDER == "openai":
         return client.responses.create(
             model=model,
