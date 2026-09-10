@@ -26,7 +26,7 @@ PILLAR_GUIDANCE = (
     "Also suggest that by prayer or affirmation the user can change their lives drastically.\n"
     "Suggest that believing takes place in the mind, but faith is a feeling that takes place in our soul.\n"
     "Suggest that every result has a clear and appropiate cause. Therefore when a specific result is desired, one can actively seek a condition that will ensure its achievement.\n"
-    "In addition, suggest that the backward law without mention it that if one puts it to good use can become beneficial to the one who understand it.\n"
+    "In addition, suggest that sometimes the harder one desperately chase a feeling or an outcome, the more one is reinforcing the feeling that we dont have it. Suggest that insisting is resisting! by letting go, one is applying the backward law to one's benefit.\n"
     "FINALLY, for Technical, Financial, Scientific, Accounting, Investing, Statistics, or AI questions, apply practical logic, knowledge, and reasonsing directly.\n"
     "NOTE, apply one good example, principle, teaching, or practice from each chosen pillar that best fits the answer.\n"
     "Avoid vague usage of the pillars as a substitute for a real principle.\n"
