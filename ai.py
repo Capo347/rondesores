@@ -4,6 +4,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from plenitude_core import PLENITUDE_CONSTITUTION
 from knowledge import search_knowledge, internal_log
+from lottery import lottery_reply  # Import the function that formats lottery selections and asks “Play again?”
 load_dotenv()
 
 client = OpenAI()
@@ -420,6 +421,47 @@ def identify_situation(question):
     return response.output_text.strip()
 
 def ask_ai(question, name, memory):
+
+    # Handle lottery requests and replies to “Play again?” within this conversation.
+    text = " ".join(question.lower().replace("_", " ").split()).strip(" .!?")  # Normalize the message.
+    previous_reply = memory[-1][1] if memory else ""  # Read this conversation's last answer.
+    game_names = {  # Connect readable names to the generator's accepted names.
+        "superlotto plus": "superlotto_plus",  # Recognize SuperLotto Plus.
+        "powerball": "powerball",  # Recognize Powerball.
+        "mega millions": "mega_millions",  # Recognize Mega Millions. 
+    }
+    mentioned = [label for label in game_names if label in text]  # Find game names in the message.
+    game = game_names[mentioned[0]] if len(mentioned) == 1 else None  # Select one clearly named game.
+    choice_prompt = "Which game: SuperLotto Plus, Powerball, or Mega Millions?"  # Ask when the game is unclear.
+    previous_selection = "Your generated numbers are " in previous_reply and previous_reply.endswith("Play again?")  # Recognize our last selection.
+    repeat_request = text in ("yes", "y", "yes please", "again", "play again", "another", "different numbers", "give me different numbers")  # Recognize another-selection requests.
+    stop_request = text in ("no", "n", "no thanks", "no thank you", "stop")  # Recognize a declined repeat.
+    request_words = ("give", "generate", "pick", "numbers", "ticket", "play")  # Recognize selection-related words.
+    asks_for_selection = any(word in text.split() for word in request_words)  # Check the message's requested action.
+    lottery_topic = any(word in text.split() for word in ("lottery", "jackpot", "lotto"))  # Recognize a general lottery request.
+    named_request = game is not None and (asks_for_selection or text in game_names)  # Recognize a request naming one game.
+    general_request = lottery_topic and asks_for_selection  # Recognize requests such as “give me the jackpot for today.”
+    choosing_game = previous_reply == choice_prompt and bool(mentioned)  # Recognize an answer to our game question.
+    repeating = previous_selection and repeat_request  # Accept “yes” only after our lottery invitation.
+    lottery_response = None  # Let unrelated messages continue through the existing conversation code.
+
+    if previous_selection and stop_request:  # Handle a user declining another selection.
+        lottery_response = "Okay. What would you like to talk about next?"  # End the lottery exchange.
+    elif named_request or general_request or choosing_game or repeating:  # Handle a lottery selection request.
+        if game is None and previous_selection and not mentioned:  # Reuse the previous game when appropriate.
+            previous_game = previous_reply.split(":", 1)[0].lower()  # Read the game label from our last selection.
+            game = game_names.get(previous_game)  # Convert the label to its generator name.
+        if game is None:  # Resolve an unspecified or ambiguous game.
+            lottery_response = choice_prompt  # Ask the user to choose a game.
+        else:  # Generate the requested game's selection.
+            lottery_response = lottery_reply(game, previous_reply)  # Avoid repeating the previous displayed selection.
+
+    if lottery_response is not None:  # Complete handled lottery messages here.
+        print(textwrap.fill(lottery_response, width=80))  # Display the response in the terminal.
+        memory.append((question, lottery_response))  # Save the exchange once for this conversation.
+        if len(memory) > 20:  # Apply the existing conversation-history limit.
+            del memory[:-20]  # Keep the newest twenty exchanges.
+        return lottery_response  # Send the response to Rondesores.
 
     print("🤖 Rondesores")
     print("-----------------")
