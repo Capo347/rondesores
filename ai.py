@@ -434,7 +434,7 @@ def ask_ai(question, name, memory):
     game = game_names[mentioned[0]] if len(mentioned) == 1 else None  # Select one clearly named game.
     choice_prompt = "Which game: SuperLotto Plus, Powerball, or Mega Millions?"  # Ask when the game is unclear.
     previous_selection = "Your generated numbers are " in previous_reply and previous_reply.endswith("Play again?")  # Recognize our last selection.
-    repeat_request = text in ("yes", "y", "yes please", "again", "play again", "another", "different numbers", "give me different numbers")  # Recognize another-selection requests.
+    repeat_request = text in ("yes", "y", "yes please", "again", "another") or any(phrase in text for phrase in ("next numbers", "new numbers", "different numbers", "another set", "play again"))  # Recognize requests for another lottery selection.
     stop_request = text in ("no", "n", "no thanks", "no thank you", "stop")  # Recognize a declined repeat.
     request_words = ("give", "generate", "pick", "numbers", "ticket", "play")  # Recognize selection-related words.
     asks_for_selection = any(word in text.split() for word in request_words)  # Check the message's requested action.
