@@ -423,7 +423,7 @@ def identify_situation(question):
 def ask_ai(question, name, memory):
 
     # Handle lottery requests and replies to “Play again?” within this conversation.
-    text = " ".join(question.lower().replace("_", " ").split()).strip(" .!?")  # Normalize the message.
+    text = " ".join(question.lower().replace("_", " ").split()).strip(" .!?").replace("super lotto", "superlotto").replace("superlotto plus", "superlotto").replace("superlotto", "superlotto plus")  # Recognize SuperLotto, super lotto, and SuperLotto Plus as the same game.
     previous_reply = memory[-1][1] if memory else ""  # Read this conversation's last answer.
     game_names = {  # Connect readable names to the generator's accepted names.
         "superlotto plus": "superlotto_plus",  # Recognize SuperLotto Plus.
