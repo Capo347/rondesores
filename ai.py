@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from plenitude_core import PLENITUDE_CONSTITUTION
 from knowledge import search_knowledge, internal_log
 from lottery import lottery_reply  # Import the function that formats lottery selections and asks “Play again?”
+from bible_guidance import handle_bible_question
 load_dotenv()
 
 client = OpenAI()
@@ -462,6 +463,97 @@ def ask_ai(question, name, memory):
         if len(memory) > 20:  # Apply the existing conversation-history limit.
             del memory[:-20]  # Keep the newest twenty exchanges.
         return lottery_response  # Send the response to Rondesores.
+
+        # Recognize Bible questions and Scripture references.
+    import re
+
+    bible_words = re.compile(
+        r"\b(bible|biblical|scriptures?|verses?|testaments?|"
+        r"jesus|christ|biblia|bíblic[oa]s?|escrituras?|"
+        r"versículos?|jesús|cristo)\b",
+        re.IGNORECASE,
+    )
+
+    bible_books = (
+        r"Genesis|Exodus|Leviticus|Numbers|Deuteronomy|"
+        r"Joshua|Judges|Ruth|Samuel|Kings|Chronicles|"
+        r"Ezra|Nehemiah|Esther|Job|Psalms?|Proverbs|"
+        r"Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|"
+        r"Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|"
+        r"Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|"
+        r"Haggai|Zechariah|Malachi|Matthew|Mark|Luke|John|"
+        r"Acts|Romans|Corinthians|Galatians|Ephesians|"
+        r"Philippians|Colossians|Thessalonians|Timothy|"
+        r"Titus|Philemon|Hebrews|James|Peter|Jude|Revelation|"
+        r"Génesis|Éxodo|Salmos|Proverbios|Mateo|Marcos|"
+        r"Lucas|Juan|Hechos|Romanos|Filipenses|Apocalipsis"
+    )
+
+    bible_reference = re.compile(
+        rf"\b(?:[123]\s*)?(?:{bible_books})\s+\d+"
+        rf"(?:[:.]\d+)?",
+        re.IGNORECASE,
+    )
+
+    bible_question = bool(
+        bible_words.search(question)
+        or bible_reference.search(question)
+    )
+
+    previous_was_bible = bool(
+        bible_words.search(previous_reply)
+        or bible_reference.search(previous_reply)
+    )
+
+    followup_text = question.casefold().strip().rstrip("?.!")
+
+    bible_followup = previous_was_bible and (
+        followup_text in {
+            "why", "how", "explain", "explain more",
+            "tell me more", "give me another",
+            "what does that mean", "how can i apply that",
+            "por qué", "cómo", "explícame", "dime más",
+            "qué significa eso", "cómo puedo aplicarlo",
+        }
+        or followup_text.startswith((
+            "how can i apply",
+            "how do i apply",
+            "what does that",
+            "cómo puedo aplicar",
+        ))
+    )
+
+    if bible_question or bible_followup:
+        # Convert existing memory pairs to the Bible function's format.
+        bible_history = []
+
+        for past_question, past_answer in memory[-12:]:
+            bible_history.append({
+                "role": "user",
+                "content": past_question,
+            })
+            bible_history.append({
+                "role": "assistant",
+                "content": past_answer,
+            })
+
+        # Use the credentials and model already configured in ai.py.
+        bible_answer = handle_bible_question(
+            question,
+            bible_history,
+            api_key=client.api_key,
+            model=MAIN_MODEL,
+        )
+
+        print(textwrap.fill(bible_answer, width=80))
+
+        # Save one exchange in Rondesores' existing memory.
+        memory.append((question, bible_answer))
+
+        if len(memory) > 20:
+            del memory[:-20]
+
+        return bible_answer
 
     print("🤖 Rondesores")
     print("-----------------")
