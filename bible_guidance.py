@@ -601,6 +601,34 @@ def prepare_search(question, history, api_key, model):
 
     names = [book["name"] for book in load_bible()["books"]]
 
+    # Retrieve a single explicit verse reference directly from the Bible.
+    reference_pattern = (
+        r"(?<!\w)("
+        + "|".join(re.escape(name) for name in sorted(names, key=len, reverse=True))
+        + r")\s+(\d+)\s*:\s*(\d+)(?:\s*[-–]\s*(\d+))?(?![\d:])"
+    )
+    references = list(re.finditer(reference_pattern, question, re.IGNORECASE))
+
+    if len(references) == 1:
+        reference = references[0]
+        remaining = question[reference.end():]
+
+        # Leave cross-chapter ranges to the existing planner.
+        if not re.match(r"\s*[:–-]", remaining):
+            book_name = reference.group(1)
+            chapter_number = int(reference.group(2))
+            book, chapter = find_chapter(book_name, chapter_number)
+
+            return {
+                "kind": "passage",
+                "passages": [{
+                    "book": book["name"],
+                    "chapter": chapter["chapter"],
+                }],
+                "terms": [],
+                "needs_clarification": False,
+            }
+
     instructions = """
 Prepare a Scripture retrieval request, not a spiritual explanation.
 Use the conversation to resolve follow-up questions.
