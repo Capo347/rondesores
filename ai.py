@@ -585,6 +585,32 @@ def ask_ai(question, name, memory):
         confident_emotional_guidance(),
         practical_guidance(question)
     ])
+
+    from bible_guidance import get_bible_guidance
+
+    guidance = (
+        "PRIORITY FOR EVERY USER ANSWER:\n"
+        "First review all 17 Bible parameters below as one complete framework. "
+        "Then follow the existing algorithms and other guidance to answer "
+        "the user's actual question. Do not filter parameters by keywords.\n\n"
+        + get_bible_guidance()
+        + "\n\nANSWER STRUCTURE:\n"
+        "Write one warm, friendly, respectful paragraph in the user's language: "
+        "a direct definition or explanation grounded in the parameters; "
+        "a concrete example with one small action to practice today; "
+        "then a closing beginning with Remember, or its translation. "
+        "Connect the closing with hearing God's Word, acting on good instruction "
+        "in small increments without complaining or disputing, and letting go "
+        "of anxiety and attachment to the outcome. Describe manifestation "
+        "as a faith-based expectation, without promising a particular result. "
+        "Keep the answer specific to the question and do not invent connections. "
+        "Do not display the internal parameter checklist.\n\n"
+        + transformation_guidance()
+        + "\n\n"
+        + prayer_and_faith_guidance()
+        + "\n\nOTHER EXISTING GUIDANCE:\n"
+        + guidance
+    )
  
     response = call_llm(
         PLENITUDE_CONSTITUTION + "\n\n" + guidance,
