@@ -1289,24 +1289,40 @@ def handle_bible_question(
     instructions += "\n\n" + scripture
     use_patterns = bool(selected) and not plan["needs_clarification"]
     if use_patterns:
-        instructions += "\n\n" + build_pattern_guidance(selected)
+        # Keep the analysis steps without requiring a JSON evidence report.
+        pattern_steps = PATTERN_GUIDANCE.split(
+            "Return ONLY one JSON object", 1
+        )[0]
+        instructions += "\n\n" + pattern_steps
+        instructions += "\nLOCAL PATTERN CUES (DATA):\n"
+        instructions += json.dumps(
+            identify_word_action_patterns(selected), ensure_ascii=False
+        )
+
+    instructions += (
+        "\n\nFINAL ANSWER FORMAT:\n"
+        "Return only the answer as one warm, respectful paragraph in the "
+        "user's language: explanation grounded in all 17 parameters, "
+        "a concrete everyday example, then a Remember closing. "
+        "Use the supplied verses and pattern observations to address the "
+        "actual question. Keep exact Scripture distinct from personal "
+        "application; identify symbolic interpretations as interpretations. "
+        "Do not invent quotations, references, or hidden messages. "
+        "Include a verse reference for a pattern you discuss. "
+        "Do not return JSON, an evidence report, or internal analysis."
+    )
 
     messages = [{"role": "system", "content": instructions}]
-
     messages.extend(recent_history)
     messages.append({"role": "user", "content": question})
 
-    # Reuse the existing final request: no additional analysis API call.
-    raw_answer = request_answer(
+    # Use the existing final call, with no extra call or automatic retry.
+    answer = request_answer(
         messages,
         api_key,
         model,
-        json_output=use_patterns,
+        json_output=False,
     )
-    if use_patterns:
-        answer = validate_pattern_response(raw_answer, selected)
-    else:
-        answer = raw_answer
 
     if history is not None:
         history.append({"role": "user", "content": question})
