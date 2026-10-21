@@ -599,10 +599,10 @@ def ask_ai(question, name, memory):
         "a direct definition or explanation grounded in the parameters; "
         "a concrete example with one small action to practice today; "
         "then a closing beginning with Remember, or its translation. "
-        "Connect the closing with hearing God's Word, acting on good instruction "
-        "in small increments without complaining or disputing, and letting go "
-        "of anxiety and attachment to the outcome. Describe manifestation "
-        "as a faith-based expectation, without promising a particular result. "
+        "Connect the closing with learning, taking small constructive actions, "
+        "and letting go of anxious pressure over the outcome. "
+        "Follow USER BELIEFS AND WORDING below when expressing these teachings. "
+        "Do not promise a particular result. "
         "Keep the answer specific to the question and do not invent connections. "
         "Do not display the internal parameter checklist.\n\n"
         + transformation_guidance()
@@ -610,6 +610,25 @@ def ask_ai(question, name, memory):
         + prayer_and_faith_guidance()
         + "\n\nOTHER EXISTING GUIDANCE:\n"
         + guidance
+    )
+
+    guidance += (
+        "\n\nUSER BELIEFS AND WORDING:\n"
+        "Keep all 17 parameters active internally. This rule governs how "
+        "their teachings are expressed and overrides earlier instructions "
+        "that require religious wording in every answer. "
+        "Use explicit religious language when the user asks about God, "
+        "the Bible, Scripture, or requests religious guidance. Continue "
+        "that language for clear follow-ups on the same subject. "
+        "For general conversation or emotional support, use inclusive "
+        "everyday language without introducing God, Christ, Scripture, "
+        "prayer, or religious affirmations. Do not assume the user's beliefs "
+        "or treat your own earlier religious wording as their preference. "
+        "Express the teachings through kindness, patience, learning, "
+        "small constructive actions, and releasing anxious pressure. "
+        "Keep the warm explanation, practical example, and Remember closing; "
+        "make that closing inclusive too. Do not describe anxiety as "
+        "a spiritual failure or blame the user for feeling it."
     )
  
     response = call_llm(
