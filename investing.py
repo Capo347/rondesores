@@ -3383,13 +3383,24 @@ def answer_investing_question(
             if not isinstance(clarification, str) or not clarification.strip():
                 raise ValueError("Invalid clarification.")
 
-    except (ValueError, TypeError, KeyError):
+
+    except (ValueError, TypeError, KeyError) as error:
+        # Record the failure reason without printing personal answers.
+        print(
+            "INVESTOR PROFILE VALIDATION ERROR:",
+            type(error).__name__,
+            str(error),
+            flush=True,
+        )
+
         if active:
             return (
-                "Please restate your last answer so I can interpret "
-                "it accurately and continue your investor assessment."
+                "I couldn't process that assessment request. "
+                "Your previous profile answers have been retained."
             )
+
         return _regular(question, memory, responder)
+    
 
     # Collect these essential answers before producing the assessment.
     required_fields = (
