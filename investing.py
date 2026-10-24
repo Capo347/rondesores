@@ -3104,14 +3104,20 @@ def is_investing_request(question, memory, responder):
         json.dumps(data, ensure_ascii=False),
     )
 
+        # Read the classification without crashing on extra formatting.
+    import re
+
     label = response.output_text.strip().upper()
 
-    if label not in ("INVESTING", "OTHER"):
-        raise ValueError(
-            "The investment classifier returned an invalid label."
-        )
+    # Find complete labels, allowing punctuation or surrounding text.
+    labels = set(re.findall(r"\b(?:INVESTING|OTHER)\b", label))
 
-    return label == "INVESTING"
+    # Send clearly classified investment questions to this module.
+    if labels == {"INVESTING"}:
+        return True
+
+    # Otherwise, allow Rondesores' regular answer flow to continue.
+    return False
 
 
 # BLOCK 18: PREPARE ANSWERS AND RUN APPROVED CALCULATIONS
@@ -3252,6 +3258,28 @@ def answer_investing_question(question, memory, responder):
         "framing unless requested. Respect the user's choice and explain "
         "financial uncertainty without repetitive generic warnings."
     )
+
+
+    # Set the professional style for the investment answer.
+    instructions += (
+        "\nRESPONSE STYLE: Use polished, professional business language "
+        "with calm authority, conviction, and a natural conversational flow. "
+        "Keep the wording understandable to a beginner and define unfamiliar "
+        "financial terms when needed. Lead with the direct answer or calculated "
+        "result, then explain how it was obtained and what it means for the "
+        "user's decision. Use the supplied calculation results accurately. "
+        "Explain relevant formulas in plain text, identify their variables, "
+        "and apply the user's actual numbers. For projections, clearly separate "
+        "money contributed from investment growth and state the assumptions. "
+        "Be confident about verified facts and calculations; describe estimates "
+        "as estimates without promising returns. "
+        "Write one coherent paragraph by default, expanding when necessary "
+        "to answer every part of a complex question. Avoid repetitive "
+        "introductions, stiff textbook phrasing, hype, and corporate jargon. "
+        "Do not use Markdown, asterisks, headings, bullet points, LaTeX, "
+        "or code fences. Use ordinary punctuation and readable formulas."
+    )
+
 
     response = responder(
         instructions,
