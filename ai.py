@@ -6,6 +6,7 @@ from plenitude_core import PLENITUDE_CONSTITUTION
 from knowledge import search_knowledge, internal_log
 from lottery import lottery_reply  # Import the function that formats lottery selections and asks “Play again?”
 from bible_guidance import handle_bible_question
+import investing  # Connect the investment functions in investing.py.
 load_dotenv()
 
 client = OpenAI()
@@ -555,6 +556,21 @@ def ask_ai(question, name, memory):
 
         return bible_answer
 
+        # Let investing handle financial questions using our lessons and calculations.
+    investment_answer = investing.answer_investing_question(
+        question, memory, call_llm
+    )
+
+    if investment_answer is not None:
+        print(textwrap.fill(investment_answer, width=80))
+        memory.append((question, investment_answer))
+
+        if len(memory) > 20:
+            del memory[:-20]
+
+        return investment_answer
+
+    
     print("🤖 Rondesores")
     print("-----------------")
     conversation = " "
