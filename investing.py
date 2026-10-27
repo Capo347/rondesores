@@ -415,24 +415,19 @@ def explain_investment_product(name):
     return dict(item)
 
 
-def next_profile_question(profile, relevant_fields=None):
-    """Return at most one relevant unanswered question."""
-    checked = update_profile(profile, {})
-
-    if relevant_fields is None:
-        relevant_fields = tuple(PROFILE_QUESTIONS)
-
-    for field in relevant_fields:
-        if field not in PROFILE_QUESTIONS:
-            raise ValueError("Unknown question field: " + str(field))
-
-        if checked[field] is None or checked[field] == []:
-            return {
-                "field": field,
-                "question": PROFILE_QUESTIONS[field],
-            }
-
-    return None
+def next_profile_question(profile=None, relevant_fields=None):
+    """Provide an external questionnaire instead of conducting one."""
+    return {
+        "field": "external_questionnaire",
+        "question": (
+            "To explore your investment goals and comfort with risk, "
+            "you can complete Vanguard's investor questionnaire: "
+            "https://investor.vanguard.com/tools-calculators/"
+            "investor-questionnaire "
+            "You can share your results here if you want help "
+            "understanding them, and ask about any unfamiliar terms."
+        ),
+    }
 
 
 def acknowledge_understanding(completed_topics, topic, confirmed):
@@ -3414,75 +3409,6 @@ def answer_investing_question(
         "monthly_amount",
         "currency",
     )
-
-
-    #Last Block INTERACTIVE QUESTIONAIRE AND PROFILE ASSESMENT.
-    # Use the existing question selector from lines 418–433.
-    pending = next_profile_question(profile, required_fields)
-
-    # Ask the actual selected question or assess the completed profile.
-    reply_rules = (
-        "You are Rondesores conducting an investor assessment. "
-        "Use confident, professional, approachable language. "
-        "Reply in the language of the latest user message. "
-        "Use one concise paragraph without Markdown symbols or headings. "
-
-        "If clarification is supplied, ask that question and wait. "
-        "Otherwise, if next_question is supplied, briefly acknowledge "
-        "the latest substantive answer and ask the selected question "
-        "naturally in the user's language. Preserve its meaning. "
-        "Ask only one question. Do not repeatedly offer to begin. "
-        "If the user needs a definition, explain it briefly before "
-        "asking the selected question. Do not pretend an unanswered "
-        "question has been answered. "
-
-        "When next_question and clarification are both null, explicitly "
-        "state the investor assessment. Identify risk tolerance as "
-        "conservative, moderate, or aggressive and state experience level. "
-        "Separately assess financial capacity to absorb losses using "
-        "the timeline, essential expenses, cash needs, and available money. "
-        "Explain which answers support each conclusion. "
-        "If willingness to take risk exceeds financial capacity, "
-        "explain the mismatch and respect the financial limits. "
-        "Identify an investment approach only when supported by answers. "
-        "Otherwise say the approach is still undecided. "
-        "Do not confuse experience, risk tolerance, and trading approach. "
-        "Explain how the profile affects investment comparisons, "
-        "diversification, access to cash, and risk limits. "
-        "If essential financial details remain uncertain, explain what "
-        "needs clarification and make the assessment provisional. "
-        "Do not promise returns or recommend leverage from this assessment. "
-        "Treat the assessment as revisable when circumstances change. "
-        "End by asking whether the assessment accurately describes the user. "
-        "Never claim information has been permanently saved."
-    )
-
-    response = responder(
-        reply_rules,
-        json.dumps(
-            {
-                "profile": profile,
-                "clarification": clarification,
-                "next_question": pending,
-                "recent_conversation": conversation[-6:],
-                "latest_message": question,
-            },
-            ensure_ascii=False,
-        ),
-    )
-
-    reply = response.output_text.strip()
-
-    # Preserve existing answers if the response is empty.
-    if not reply:
-        return (
-            "Please resend your last answer so we can continue "
-            "your investor assessment."
-        )
-
-    # Replace the old profile record rather than accumulating copies.
-    memory[:] = conversation
-    memory.append((marker, json.dumps(profile, ensure_ascii=False)))
-
-    # The existing ai.py connection displays and remembers this answer.
-    return reply
+    # Finish this function and return control to ai.py.
+    return None
+    
